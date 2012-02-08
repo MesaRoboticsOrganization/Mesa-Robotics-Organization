@@ -1,12 +1,16 @@
 /*
  * File Name: DetectCollision.java
- * 
+ *
  * Author: Kiet Lam <ktklam9@gmail.com>
- * 
+ *
  * Purpose: Game collision detection using
  *          jMonkeyEngine
- * 
+ *
+ * Date Created: 2/8/12
+ * Date Modified: 2/8/12
+ *
  */
+
 package collision;
 
 import com.jme3.app.SimpleApplication;
@@ -31,7 +35,7 @@ public class DetectCollision extends SimpleApplication
     private Vector3f velocityV;
     private Spatial smallCube;
     private Spatial bigCube;
-    
+
     public DetectCollision()
     {
         // Set the velocity vector
@@ -42,13 +46,13 @@ public class DetectCollision extends SimpleApplication
     {
         // Start our program
         DetectCollision dc = new DetectCollision();
-        
+
         // Instantiate a settings
         AppSettings settings = new AppSettings(true);
-        
+
         // Set max frame rate to 60fps
         settings.setFrameRate(60);
-        
+
         settings.setTitle("Mesa Robotics!!!");
         dc.setSettings(settings);
         dc.start();
@@ -72,22 +76,22 @@ public class DetectCollision extends SimpleApplication
             "Common/MatDefs/Misc/Unshaded.j3md");
         mat2.setColor("Color", ColorRGBA.Red);
         bigCube.setMaterial(mat2);
-        
+
         // Make them both visible by attaching to the rootNode
         rootNode.attachChild(smallCube);
         rootNode.attachChild(bigCube);
     }
-    
+
     // Our update loop
     @Override
     public void simpleUpdate(float tpf)
     {
         smallCube.move(velocityV);
-        
+
         // Detect collision here:
         CollisionResults results = new CollisionResults();
         bigCube.collideWith(smallCube.getWorldBound(), results);
-        
+
         // If there was a collision
         if (results.size() > 0)
         {
