@@ -39,7 +39,7 @@ public class DetectCollision extends SimpleApplication
     public DetectCollision()
     {
         // Set the velocity vector
-        velocityV = new Vector3f(0.05f, 0, 0);
+        velocityV = new Vector3f(2.0f, 0, 0);
     }
 
     public static void main(String[] args)
@@ -86,7 +86,7 @@ public class DetectCollision extends SimpleApplication
     @Override
     public void simpleUpdate(float tpf)
     {
-        smallCube.move(velocityV);
+        smallCube.move(velocityV.mult(tpf));
 
         // Detect collision here:
         CollisionResults results = new CollisionResults();
