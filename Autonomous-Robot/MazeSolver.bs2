@@ -4,13 +4,17 @@
 ' Author: Kiet Lam
 ' Email: ktklam9@gmail.com
 ' Purpose: Boe-Bot maze solver
+' Date Modified: 2/24/2012
+
 
 ' Parameteric variables (use these when calling the subroutines)
 degreeCounter VAR Word ' Every degreeCounter ~0.2556 degrees
 stepCounter   VAR Word ' Every stepCounter ~ 1.64383cm
 
+
 ' Private variables (don't touch these)
 counter VAR Word
+
 
 ' Initialize the parameter variables to good defaults
 degreeCounter = 30 ' For 90 degrees turns
@@ -44,7 +48,7 @@ goForward:
   NEXT
   RETURN
 
-' Parametric varibles used: degreeCounter
+' Parametric variables used: degreeCounter
 ' How to use: . set $degreeCounter
 '             . every 1 degreeCounter ~ 0.2556 degrees
 turnCCWise:
@@ -56,7 +60,7 @@ turnCCWise:
   PAUSE 200
   RETURN
 
-' Parametric varibles used: degreeCounter
+' Parametric variables used: degreeCounter
 ' How to use: . set $degreeCounter
 '             . every 1 degreeCounter ~ 0.2556 degrees
 turnCWise:
