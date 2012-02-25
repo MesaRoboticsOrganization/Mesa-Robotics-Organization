@@ -1,0 +1,69 @@
+' {$STAMP BS2}
+' {$PBASIC 2.5}
+
+' Author: Kiet Lam
+' Email: ktklam9@gmail.com
+' Purpose: Boe-Bot maze solver
+
+' Parameteric variables (use these when calling the subroutines)
+degreeCounter VAR Word ' Every degreeCounter ~0.2556 degrees
+stepCounter   VAR Word ' Every stepCounter ~ 1.64383cm
+
+' Private variables (don't touch these)
+counter VAR Word
+
+' Initialize the parameter variables to good defaults
+degreeCounter = 30 ' For 90 degrees turns
+stepCounter   = 16 ' For ~10 cm
+
+
+' Object detection here using Boe-Bot's IR Sensor (Actually works!)
+DO
+  stepCounter = 3
+  FREQOUT 8, 1, 38500
+  irDetectLeft = IN9
+
+  IF (irDetectLeft = 1) THEN
+    GOSUB goForward
+  ELSE
+    PAUSE 200
+  ENDIF
+  PAUSE 20
+LOOP
+
+
+' Parametric variables used: stepCounter
+' How to use: . set $stepCounter
+'             . every 1 stepCounter ~ 1.64383cm
+goForward:
+  ' Move forward
+  FOR counter = 1 TO stepCounter
+    PULSOUT 13, 650
+    PULSOUT 12, 850
+    PAUSE 50
+  NEXT
+  RETURN
+
+' Parametric varibles used: degreeCounter
+' How to use: . set $degreeCounter
+'             . every 1 degreeCounter ~ 0.2556 degrees
+turnCCWise:
+  FOR counter = 1 TO degreeCounter
+    PULSOUT 13, 700
+    PULSOUT 12, 700
+    PAUSE 20
+  NEXT
+  PAUSE 200
+  RETURN
+
+' Parametric varibles used: degreeCounter
+' How to use: . set $degreeCounter
+'             . every 1 degreeCounter ~ 0.2556 degrees
+turnCWise:
+  FOR counter = 1 TO degreeCounter
+    PULSOUT 13, 800
+    PULSOUT 12, 800
+    PAUSE 20
+  NEXT
+  PAUSE 200
+  RETURN
