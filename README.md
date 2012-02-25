@@ -1,8 +1,7 @@
-San Diego Mesa Robotics Organization:
+#**San Diego Mesa Robotics Organization**
+# www.mesarobotics.org
 
-Github Repository.
-
-Members, please email your Github account name to robomro@gmail.com if you want to have
+## Members, please email your Github account name to robomro@gmail.com if you want to have
 push authorization.
 
 Feel free to push whatever you want into the repo.
