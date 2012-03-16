@@ -5,96 +5,222 @@
 ' Email: ktklam9@gmail.com
 ' Purpose: Boe-Bot maze solver
 
-
-' Global states
-objectDetected VAR Byte
-
-' Parameteric variables (use these when calling the subroutines)
-degreeCounter VAR Word ' Every degreeCounter ~0.2556 degrees
-stepCounter   VAR Word ' Every stepCounter ~ 1.64383cm
-
-' Private variables (don't touch these)
-counter VAR Word
-irDetectLeft VAR Byte
-IRFrequency VAR Word
+' Change Log:
+' 3/16/2012: Changed so that Boe Bot will do a full 180 sweep with
+'            increment of 18 degrees instead of doing hard 90
+'            degrees right or left turn.
+'            Also change from using photoresistors for object
+'            detection to Ultrasonic
+'            Improved movement and actual turns
 
 
-' Initialize the variables to good defaults
-degreeCounter = 38 ' For 90 degrees turns
-stepCounter   = 16 ' For ~10 cm
-objectDetected = 0 ' 0 for no, 1 for yes
-IRFrequency = 31000 ' Close range detection
+' Adjust the PIN if needed
+BoeBotServoL   PIN     13 ' Left wheel
+BoeBotServoR   PIN     12 ' Right wheel
+PingServo      PIN     14 ' Ultrasonic servo
+Ping           PIN     15 ' Ultrasonic
+LEDLight       PIN     10 ' LED Light
+
+' Calibrate these to make sure they are correct
+TurnLLFast     CON     650 ' The rotation for the left wheel's servo on a left turn
+TurnLRFast     CON     650 ' The rotation for the right wheel's servo on a left turn
+TurnRLFast     CON     850 ' The rotation for the left wheel's servo on a right turn
+TurnRRFast     CON     850 ' The rotation for the right wheel's servo on a right turn
+FwdLeftFast    CON     700 ' The rotation for the left wheel's servo on forward
+FwdRightFast   CON     800 ' The rotation for the right wheel's servo on forward
+Center         CON     750 ' No rotation
+
+
+' Calibrate this to make sure the robot is converting the time to centimeter correctly
+' for the Ultrasonic Ping
+cmConversion   CON     2251
+
+
+' Parametric Variables (change these values when calling respective subroutines)
+distance       VAR     Word ' The distance to detect objects
+forwardDur     VAR     Byte ' The duration to go forward
+turnDeg        VAR     Byte ' The turn degrees
+
+' Private Variables:
+counter        VAR     Byte
+time           VAR     Word
+objectDetected VAR     Bit
+counterI       VAR     Word
+sweepDeg       VAR     Word
+degIntern      VAR     Word
+degDetected    VAR     Word
+LimitLeft      VAR     Word
+LimitRight     VAR     Word
+
 
 GOSUB MAIN
 END
 
 MAIN:
-  stepCounter = 3
+  sweepDeg = 18
+  distance   = 13
+  forwardDur = 10
+  turnDeg    = 18
+
+  GOSUB pingCenter
   DO
     GOSUB detectObject
     IF (objectDetected = 1) THEN
-      GOSUB turnCWise
-      PAUSE 500
-      GOSUB detectObject
-      PAUSE 500
-      IF (objectDetected = 1) THEN
-        GOSUB turnCCWise
-        PAUSE 500
-        GOSUB turnCCWise
+      HIGH LEDLight
+      GOSUB sweep
+      IF (degDetected < 90) THEN
+        FOR counter = 0 TO (degDetected / sweepDeg)
+          GOSUB turnLeftDeg
+        NEXT
+      ELSE
+        FOR counter = 0 TO ((degDetected - 90)/ sweepDeg)
+          GOSUB turnRightDeg
+        NEXT
       ENDIF
+      LOW LEDLight
     ELSE
-      GOSUB goForward
+      GOSUB forward
     ENDIF
+    objectDetected = 0
   LOOP
   RETURN
 
 
-detectObject:
-  ' Object detection here using Boe-Bot's IR Sensor (Actually works!)
-  FREQOUT 8, 1, IRFrequency
-  irDetectLeft = IN9
+' Turn 90 degrees to the right
+turnRight:
+  FOR counter = 0 TO 25
+    PULSOUT BoeBotServoL, TurnRLFast
+    PULSOUT BoeBotServoR, TurnRRFast
+    PAUSE 20
+  NEXT
 
-  IF (irDetectLeft = 1) THEN
-    objectDetected = 0
-  ELSE
+  RETURN
+
+' Turn 90 degrees to the right
+turnLeft:
+  FOR counter = 0 TO 25
+    PULSOUT BoeBotServoL, TurnLLFast
+    PULSOUT BoeBotServoR, TurnLRFast
+    PAUSE 20
+  NEXT
+
+  RETURN
+
+' Turn to the right by $turnDeg degrees
+turnRightDeg:
+  FOR counter = 0 TO ((25 * turnDeg) / 90)
+    PULSOUT BoeBotServoL, TurnRLFast
+    PULSOUT BoeBotServoR, TurnRRFast
+    PAUSE 20
+  NEXT
+
+  RETURN
+
+' Turn to the left by $turnDeg degrees
+turnLeftDeg:
+  FOR counter = 0 TO ((25 * turnDeg) / 90)
+    PULSOUT BoeBotServoL, TurnLLFast
+    PULSOUT BoeBotServoR, TurnLRFast
+    PAUSE 20
+  NEXT
+
+  RETURN
+
+
+' Parametric Variables:
+' forwardDur : Duration of going forward
+forward:
+  FOR counter = 0 TO forwardDur
+    PULSOUT BoeBotServoL, FwdLeftFast
+    PULSOUT BoeBotServoR, FwdRightFast
+    PAUSE 20
+  NEXT
+
+  PAUSE 20
+  RETURN
+
+
+' Sweep a 180 arch by incrementing multiples of sweepDeg
+' Will use Ultrasonic Ping to detect object depending on the distance
+' Sets detectObject to be 1 if there is an object on the sweep, 0 otherwise
+' Returns the degree where the object was detected, NOTE: 0 begins on the right, parallel
+' to the Boe Bot
+sweep:
+  GOSUB pingCenter
+  LimitLeft = 750
+  LimitRight = 750
+
+  FOR counter = 1 TO (90 / sweepDeg)
+    LimitLeft = Center + (counter * ((500 * sweepDeg) / 90))
+    PAUSE 300
+    GOSUB detectObject
+    IF (objectDetected = 1) THEN
+      degDetected = 90 + (counter * sweepDeg)
+      GOSUB pingCenter
+      RETURN
+    ELSE
+      GOSUB pingLeft
+    ENDIF
+  NEXT
+
+  FOR counter = 1 TO (90 / sweepDeg)
+    LimitRight = Center - (counter * ((500 * sweepDeg) / 90))
+    PAUSE 300
+    GOSUB detectObject
+    IF (objectDetected = 1) THEN
+      degDetected = counter * sweepDeg
+      GOSUB pingCenter
+      RETURN
+    ELSE
+      GOSUB pingRight
+    ENDIF
+  NEXT
+
+  PAUSE 100
+
+  GOSUB pingCenter
+  degDetected = -1
+  RETURN
+
+
+' Detect whether an object is infront of the Boe bot
+' Uses distance to determine this
+detectObject:
+  PULSOUT Ping, 5
+  PULSIN  Ping, 1, time
+  time = time ** cmConversion
+  IF (time < distance) THEN
     objectDetected = 1
+  ELSE
+    objectDetected = 0
   ENDIF
 
+  PAUSE 20
   RETURN
 
 
-' Parametric variables used: stepCounter
-' How to use: . set $stepCounter
-'             . every 1 stepCounter ~ 1.64383cm
-goForward:
-  ' Move forward
-  FOR counter = 1 TO stepCounter
-    PULSOUT 13, 500
-    PULSOUT 12, 1000
-    PAUSE 50
-  NEXT
-  RETURN
-
-' Parametric varibles used: degreeCounter
-' How to use: . set $degreeCounter
-'             . every 1 degreeCounter ~ 0.2556 degrees
-turnCCWise:
-  FOR counter = 1 TO degreeCounter
-    PULSOUT 13, 700
-    PULSOUT 12, 700
+' Move the Ultrasonic servo to the left
+pingLeft:
+  FOR counterI = 1 TO 10
+    PULSOUT 14, LimitLeft
     PAUSE 20
   NEXT
-  PAUSE 200
   RETURN
 
-' Parametric varibles used: degreeCounter
-' How to use: . set $degreeCounter
-'             . every 1 degreeCounter ~ 0.2556 degrees
-turnCWise:
-  FOR counter = 1 TO degreeCounter
-    PULSOUT 13, 800
-    PULSOUT 12, 800
+
+' Move the Ultrasonic servo to the right
+pingRight:
+  FOR counterI = 1 TO 10
+    PULSOUT 14, LimitRight
     PAUSE 20
   NEXT
-  PAUSE 200
+  RETURN
+
+
+' Center the Ultrasonic servo
+pingCenter:
+  FOR counterI = 1 TO 10
+    PULSOUT 14, Center
+    PAUSE 20
+  NEXT
   RETURN
