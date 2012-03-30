@@ -5,6 +5,20 @@
 ' Email: ktklam9@gmail.com
 ' Purpose: Boe-Bot maze solver
 
+' Change Log:
+' 3/30/2012: Changed from constantly sweeping to a stay-left algorithm
+'            Deleted the sweep subroutine and the turn<Left/Right>Deg
+'            subroutines.
+'            Right now the BOE Bot will make only 90 degrees turns,
+'            need to test how this will affect it in a full maze setup
+' 3/16/2012: Changed so that Boe Bot will do a full 180 sweep with
+'            increment of 18 degrees instead of doing hard 90
+'            degrees right or left turn.
+'            Also change from using photoresistors for object
+'            detection to Ultrasonic
+'            Improved movement and actual turns
+
+
 
 ' Adjust the PIN if needed
 BoeBotServoL   PIN     13 ' Left wheel
