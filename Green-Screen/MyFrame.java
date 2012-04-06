@@ -45,7 +45,6 @@ public class MyFrame extends javax.swing.JFrame
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents()
     {
-
         jPanel6 = new javax.swing.JPanel();
         picturePanel = new ImagePanel();
         backgroundButton = new javax.swing.JButton();
@@ -110,21 +109,21 @@ public class MyFrame extends javax.swing.JFrame
                 .addComponent(jLabel1)
                 .addGroup(jPanel6Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel6Layout.createSequentialGroup()
-                        .addGap(40, 40, 40)
-                        .addComponent(foregroundButton)
-                        .addGap(84, 84, 84)
-                        .addComponent(saveButton)
-                        .addGap(85, 85, 85)
-                        .addComponent(quitButton))
-                    .addGroup(jPanel6Layout.createSequentialGroup()
                         .addGap(59, 59, 59)
                         .addComponent(heightSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel2)
                         .addGap(50, 50, 50)
-                        .addComponent(bothSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4)))
+                        .addComponent(bothSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel6Layout.createSequentialGroup()
+                        .addGap(40, 40, 40)
+                        .addComponent(foregroundButton)
+                        .addGap(84, 84, 84)
+                        .addComponent(saveButton)
+                        .addGap(75, 75, 75)
+                        .addComponent(quitButton)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel4)
                 .addContainerGap(106, Short.MAX_VALUE))
             .addComponent(picturePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -163,7 +162,6 @@ public class MyFrame extends javax.swing.JFrame
         );
 
         pack();
-
     }// </editor-fold>//GEN-END:initComponents
 
 
@@ -171,9 +169,13 @@ public class MyFrame extends javax.swing.JFrame
     {
         foregroundButton.addActionListener(new ForegroundListener(picturePanel));
         backgroundButton.addActionListener(new BackgroundListener(picturePanel));
+        saveButton.addActionListener(new SaveListener(picturePanel));
+        quitButton.addActionListener(new QuitListener());
 
         picturePanel.setFocusable(true);
         picturePanel.addKeyListener(picturePanel);
+        picturePanel.addMouseListener(picturePanel);
+        picturePanel.addMouseMotionListener(picturePanel);
 
         widthSlider.addChangeListener(new WidthListenter(picturePanel));
         heightSlider.addChangeListener(new HeightListenter(picturePanel));
@@ -357,6 +359,59 @@ public class MyFrame extends javax.swing.JFrame
 
             picturePanel.process();
             picturePanel.requestFocus();
+        }
+    }
+
+
+    private class SaveListener implements ActionListener
+    {
+        private ImagePanel picturePanel;
+
+        public SaveListener(ImagePanel _picturePanel)
+        {
+            picturePanel = _picturePanel;
+        }
+
+        public void actionPerformed(ActionEvent e)
+        {
+            Picture pic = picturePanel.getFinalImage();
+
+            if (pic == null)
+            {
+                return;
+            }
+
+            JFileChooser jc = new JFileChooser(".");
+
+            int status = jc.showSaveDialog(null);
+
+            File file = null;
+
+            if (status != JFileChooser.APPROVE_OPTION)
+            {
+                return;
+            }
+            else
+            {
+                file = jc.getSelectedFile();
+            }
+
+            try
+            {
+                BufferedImage bImage = pic.getBufferedImage();
+                ImageIO.write(bImage, "png", file);
+            } catch (IOException ex)
+            {
+                System.out.println("There was an exception!");
+            }
+        }
+    }
+
+    private class QuitListener implements ActionListener
+    {
+        public void actionPerformed(ActionEvent e)
+        {
+            System.exit(0);
         }
     }
 }

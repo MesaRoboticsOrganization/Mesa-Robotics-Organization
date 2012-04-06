@@ -16,7 +16,9 @@ import javax.swing.*;
 import javax.swing.event.*;
 
 
-public class ImagePanel extends JPanel implements KeyListener
+public class ImagePanel extends JPanel implements KeyListener,
+                                                  MouseListener,
+                                                  MouseMotionListener
 {
     final int xStepRate = 10;
     final int yStepRate = 10;
@@ -27,10 +29,18 @@ public class ImagePanel extends JPanel implements KeyListener
     private Picture finalImage;
     private int     foregroundX;
     private int     foregroundY;
+    private int     initForegroundX;
+    private int     initForegroundY;
     private int     foregroundW;
     private int     foregroundH;
     private int     initForegroundW;
     private int     initForegroundH;
+
+    private int     startDragX;
+    private int     startDragY;
+    private int     inDragX;
+    private int     inDragY;
+    private boolean inDrag;
 
 
     public ImagePanel()
@@ -42,10 +52,24 @@ public class ImagePanel extends JPanel implements KeyListener
         finalImage      = null;
         foregroundX     = 120;
         foregroundY     = 120;
+        initForegroundX = foregroundX;
+        initForegroundY = foregroundY;
         foregroundW     = 240;
         foregroundH     = 120;
         initForegroundW = foregroundW;
         initForegroundH = foregroundH;
+        startDragX      = -1;
+        startDragY      = -1;
+        inDragX         = -1;
+        inDragY         = -1;
+        inDrag          = false;
+
+    }
+
+    public Picture getFinalImage()
+    {
+        process();
+        return finalImage;
     }
 
     public void setBackgroundImage(Picture _backgroundImage)
@@ -62,7 +86,7 @@ public class ImagePanel extends JPanel implements KeyListener
     public void setForegroundImage(Picture _foregroundImage)
     {
         originalForegroundImage = _foregroundImage;
-        foregroundImage = resizeImage(originalForegroundImage, foregroundW, foregroundH);
+        foregroundImage         = resizeImage(originalForegroundImage, foregroundW, foregroundH);
         process();
     }
 
@@ -83,8 +107,7 @@ public class ImagePanel extends JPanel implements KeyListener
             return;
         }
 
-        foregroundW = initForegroundW + w;
-
+        foregroundW     = initForegroundW + w;
         foregroundImage = resizeImage(originalForegroundImage, foregroundW, foregroundH);
     }
 
@@ -100,8 +123,7 @@ public class ImagePanel extends JPanel implements KeyListener
             return;
         }
 
-        foregroundH = initForegroundH + h;
-
+        foregroundH     = initForegroundH + h;
         foregroundImage = resizeImage(originalForegroundImage, foregroundW, foregroundH);
     }
 
@@ -137,8 +159,7 @@ public class ImagePanel extends JPanel implements KeyListener
             }
         }
 
-        Picture tempImage = new Picture(backgroundImage.getWidth(), backgroundImage.getHeight());
-
+        Picture tempImage   = new Picture(backgroundImage.getWidth(), backgroundImage.getHeight());
         Pixel[] finalPixels = tempImage.getPixels();
 
         for (int i = 0; i < backPixel.length; ++i)
@@ -156,8 +177,8 @@ public class ImagePanel extends JPanel implements KeyListener
 
     private Picture resizeImage(Picture _image, int w, int h)
     {
-        int imageW   = _image.getWidth();
-        int imageH   = _image.getHeight();
+        int imageW = _image.getWidth();
+        int imageH = _image.getHeight();
 
         return _image.scale(((double) w) / imageW, ((double) h) / imageH);
     }
@@ -247,5 +268,69 @@ public class ImagePanel extends JPanel implements KeyListener
     public void keyTyped(KeyEvent e)
     {
 
+    }
+
+    public void mouseClicked(MouseEvent e)
+    {
+    }
+
+    public void mouseEntered(MouseEvent e)
+    {
+    }
+
+    public void mouseExited(MouseEvent e)
+    {
+    }
+
+    public void mousePressed(MouseEvent e)
+    {
+        Point p = e.getPoint();
+        startDragX = p.x;
+        startDragY = p.y;
+
+        if (startDragX >= foregroundX && startDragX < foregroundX + foregroundW
+            && startDragY >= foregroundY && startDragY < foregroundY + foregroundH)
+        {
+            inDrag = true;
+        }
+        else
+        {
+            inDrag = false;
+        }
+    }
+
+    public void mouseReleased(MouseEvent e)
+    {
+        initForegroundX = foregroundX;
+        initForegroundY = foregroundY;
+        inDrag = false;
+    }
+
+    public void mouseMoved(MouseEvent e)
+    {
+    }
+
+    public void mouseDragged(MouseEvent e)
+    {
+        Point p = e.getPoint();
+        inDragX = p.x;
+        inDragY = p.y;
+
+        int changeX = inDragX - startDragX;
+        int changeY = inDragY - startDragY;
+
+        if (inDrag)
+        {
+            if (foregroundX + changeX + foregroundW < backgroundImage.getWidth()
+                && foregroundX + changeX > 0
+                && foregroundY + changeY + foregroundH < backgroundImage.getHeight()
+                && foregroundY + changeY > 0)
+            {
+                foregroundX = initForegroundX + changeX;
+                foregroundY = initForegroundY + changeY;
+
+                process();
+            }
+        }
     }
 }
