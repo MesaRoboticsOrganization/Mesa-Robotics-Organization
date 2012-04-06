@@ -143,30 +143,22 @@ public class ImagePanel extends JPanel implements KeyListener,
             }
         }
 
-        Pixel[][] backPixel = getPixelArray(backgroundImage);
-        Pixel[][] forePixel = getPixelArray(foregroundImage);
+        Picture tempImage = new Picture(backgroundImage);
 
-        for (int i = foregroundX, j = 0; i < foregroundW + foregroundX; ++i, ++j)
+        Pixel[] backPixel = tempImage.getPixels();
+        Pixel[] forePixel = foregroundImage.getPixels();
+
+        for (int i = foregroundY, j = 0; i < foregroundY + foregroundH; ++i, ++j)
         {
-            for (int ii = foregroundY, jj = 0; ii < foregroundH + foregroundY; ++ii, ++jj)
+            for (int ii = foregroundX, jj = 0; ii < foregroundX + foregroundW; ++ii, ++jj)
             {
-                Pixel pix = forePixel[j][jj];
+                Pixel pix = forePixel[j * foregroundW + jj];
 
                 if (!(pix.getRed() + pix.getBlue() < pix.getGreen()))
                 {
-                    backPixel[i][ii] = forePixel[j][jj];
+                    backPixel[i * backgroundImage.getWidth() + ii].setColor(forePixel[j * foregroundW
+                                                                                      + jj].getColor());
                 }
-            }
-        }
-
-        Picture tempImage   = new Picture(backgroundImage.getWidth(), backgroundImage.getHeight());
-        Pixel[] finalPixels = tempImage.getPixels();
-
-        for (int i = 0; i < backPixel.length; ++i)
-        {
-            for (int ii = 0; ii < backPixel[0].length; ++ii)
-            {
-                finalPixels[ii * backPixel.length + i].setColor(backPixel[i][ii].getColor());
             }
         }
 
@@ -181,24 +173,6 @@ public class ImagePanel extends JPanel implements KeyListener,
         int imageH = _image.getHeight();
 
         return _image.scale(((double) w) / imageW, ((double) h) / imageH);
-    }
-
-    private int[][] getRGBMatrix(BufferedImage _image)
-    {
-        int w = _image.getWidth();
-        int h = _image.getHeight();
-
-        int[][] arInt = new int[w][h];
-
-        for (int i = 0; i < w; ++i)
-        {
-            for (int ii = 0; ii < h; ++ii)
-            {
-                arInt[i][ii] = _image.getRGB(i, ii);
-            }
-        }
-
-        return arInt;
     }
 
     private Pixel[][] getPixelArray(Picture _image)
