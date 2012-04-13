@@ -1,0 +1,14 @@
+- Make the update faster (the process() method in ImagePanel).
+  Right now, the program is updating the
+  entire picture (background + foreground) everytime
+  a new stuff happens.
+
+  Need a smarter (efficient) way of updating by just
+  updating the area that changed, not the
+  entire picture.
+
+  The code will probably look very nasty
+  from the initial attempt
+
+- Clean up ImagePanel
+  Code is very ugly right now
