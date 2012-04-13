@@ -81,18 +81,18 @@ public class MyFrame extends javax.swing.JFrame
         quitButton.setText("Quit");
 
         widthSlider.setMaximum(650);
-        widthSlider.setMinimum(-240);
+        widthSlider.setMinimum(-200);
         widthSlider.setToolTipText("");
 
         heightSlider.setMaximum(400);
-        heightSlider.setMinimum(-120);
+        heightSlider.setMinimum(-90);
 
         jLabel1.setText("Width");
 
         jLabel2.setText("Height");
 
         bothSlider.setMaximum(400);
-        bothSlider.setMinimum(-120);
+        bothSlider.setMinimum(-90);
 
         jLabel4.setText("Both");
 
