@@ -148,17 +148,18 @@ public class ImagePanel extends JPanel implements KeyListener,
         Pixel[] backPixel = tempImage.getPixels();
         Pixel[] forePixel = foregroundImage.getPixels();
 
-        for (int i = foregroundY, j = 0; i < foregroundY + foregroundH; ++i, ++j)
+        int w = foregroundImage.getWidth();
+        int h = foregroundImage.getHeight();
+
+        for (int i = foregroundY, j = 0; i < foregroundY + h; ++i, ++j)
         {
-            for (int ii = foregroundX, jj = 0; ii < foregroundX + foregroundW; ++ii, ++jj)
+            for (int ii = foregroundX, jj = 0; ii < foregroundX + w; ++ii, ++jj)
             {
-                Pixel pix = forePixel[j * foregroundW + jj];
+                Pixel pix = forePixel[(j * w) + jj];
 
                 if (!(pix.getRed() + pix.getBlue() < pix.getGreen()))
                 {
-                    backPixel[i * backgroundImage.getWidth() + ii].setColor(forePixel[j * foregroundW
-                                                                                      + jj].getColor());
-                }
+                    backPixel[i * backgroundImage.getWidth() + ii].setColor(pix.getColor());                }
             }
         }
 
