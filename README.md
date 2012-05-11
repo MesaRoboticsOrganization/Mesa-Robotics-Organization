@@ -14,5 +14,5 @@ Just install using your operating system's software manager
 *Tutorials on how to use Git*
 
 http://www.ralfebert.de/tutorials/git/
-http://book.git-scm.com/
-http://gitbyexample.org/
+<br>http://book.git-scm.com/
+<br>http://gitbyexample.org/
