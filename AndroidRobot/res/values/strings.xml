@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="hello">Hello World, AndroidRobotActivity!</string>
+    <string name="hello">Hello World from Mesa Robotics!!!</string>
     <string name="app_name">AndroidRobot</string>
 
 </resources>
