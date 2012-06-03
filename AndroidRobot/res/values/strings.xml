@@ -4,6 +4,6 @@
     <string name="hello">Hello World from Mesa Robotics!!!</string>
     <string name="app_name">AndroidRobot</string>
     <string name="reconnect">Reconnect</string>
-    <string name="send">send</string>
+    <string name="send">Send</string>
 
 </resources>

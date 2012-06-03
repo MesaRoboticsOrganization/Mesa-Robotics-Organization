@@ -20,6 +20,8 @@ public class BluetoothServer extends Thread {
 
 	private final static String TAG = BluetoothServer.class.getSimpleName();
 
+	public final int MILITOSECS = 1000;
+
 	private BluetoothServerSocket serverSocket;
 	private BluetoothHandler handler;
 	private boolean shouldContinue;
@@ -49,14 +51,8 @@ public class BluetoothServer extends Thread {
 				break;
 			}
 
-			try {
-				if (serverSocket != null) {
-					handler.handleSocket(socket);
-					serverSocket.close();
-					break;
-				}
-			} catch (IOException e) {
-				Log.e(TAG, "", e);
+			if (serverSocket != null) {
+				handler.handleSocket(socket);
 				break;
 			}
 		}
@@ -68,7 +64,7 @@ public class BluetoothServer extends Thread {
 		} catch (IOException e) {
 			Log.e(TAG, "", e);
 		}
-		
+
 		shouldContinue = false;
 	}
 }

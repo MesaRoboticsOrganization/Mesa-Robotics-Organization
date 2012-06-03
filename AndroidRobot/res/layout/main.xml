@@ -17,46 +17,45 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/device_name"
         android:ems="10"
-        android:inputType="textMultiLine"
-        android:text="Send some message over bluetooth here" >
+        android:inputType="textMultiLine" >
 
         <requestFocus />
     </EditText>
 
     <Button
-        android:id="@+id/reconnect_button"
+        android:id="@+id/send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
         android:layout_below="@+id/message_field"
-        android:layout_marginLeft="61dp"
-        android:layout_marginTop="36dp"
-        android:text="@string/reconnect" />
-
-    <Button
-        android:id="@+id/send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/reconnect_button"
-        android:layout_marginLeft="40dp"
-        android:layout_toRightOf="@+id/reconnect_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="31dp"
         android:text="@string/send" />
 
     <Button
         android:id="@+id/server_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/reconnect_button"
-        android:layout_centerVertical="true"
+        android:layout_below="@id/send_button"
+        android:layout_marginTop="35dp"
+        android:layout_toLeftOf="@id/send_button"
         android:text="Become server" />
 
     <Button
         android:id="@+id/client_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/server_button"
-        android:layout_alignBottom="@+id/server_button"
-        android:layout_alignLeft="@+id/send"
+        android:layout_below="@id/send_button"
+        android:layout_marginTop="35dp"
+        android:layout_toRightOf="@id/send_button"
         android:text="Become client" />
+
+    <Button
+        android:id="@+id/reset_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/client_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
+        android:text="Reset" />
 
 </RelativeLayout>
