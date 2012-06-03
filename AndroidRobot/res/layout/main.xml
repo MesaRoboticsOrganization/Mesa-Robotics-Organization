@@ -27,9 +27,36 @@
         android:id="@+id/reconnect_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
         android:layout_below="@+id/message_field"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="29dp"
+        android:layout_marginLeft="61dp"
+        android:layout_marginTop="36dp"
         android:text="@string/reconnect" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/reconnect_button"
+        android:layout_marginLeft="40dp"
+        android:layout_toRightOf="@+id/reconnect_button"
+        android:text="@string/send" />
+
+    <Button
+        android:id="@+id/server_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/reconnect_button"
+        android:layout_centerVertical="true"
+        android:text="Become server" />
+
+    <Button
+        android:id="@+id/client_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/server_button"
+        android:layout_alignBottom="@+id/server_button"
+        android:layout_alignLeft="@+id/send"
+        android:text="Become client" />
 
 </RelativeLayout>
