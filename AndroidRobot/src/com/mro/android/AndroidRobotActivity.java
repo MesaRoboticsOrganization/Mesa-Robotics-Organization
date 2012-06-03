@@ -46,6 +46,7 @@ public class AndroidRobotActivity extends Activity {
 
 		clientIsRegistered = false;
 
+		// WARNING: Bugs are abound!!!!
 		messageField = (TextView) findViewById(R.id.message_field);
 		deviceName = (TextView) findViewById(R.id.device_name);
 		sendButton = (Button) findViewById(R.id.send_button);
