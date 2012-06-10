@@ -1,4 +1,6 @@
-package com.mro.android;
+package com.mro.activities;
+
+import java.util.ArrayList;
 
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -10,19 +12,25 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.TextView;
 
+import com.mro.android.R;
 import com.mro.bluetooth.BluetoothClient;
 import com.mro.bluetooth.BluetoothConnection;
-import com.mro.bluetooth.BluetoothReader;
 import com.mro.bluetooth.BluetoothServer;
 import com.mro.bluetooth.BluetoothUtil;
+import com.mro.receivers.ConnectedBroadcastReceiver;
 import com.mro.util.AndroidRobotData;
 
 public class AndroidRobotActivity extends Activity {
+
+	private final static String TAG = AndroidRobotActivity.class
+			.getSimpleName();
 
 	private AndroidRobotData androidRobotData;
 	private TextView messageField;
@@ -32,6 +40,10 @@ public class AndroidRobotActivity extends Activity {
 	private Button clientButton;
 	private Button resetButton;
 	private BroadcastReceiver clientReceiver;
+	private CheckBox connectionCheckBox;
+
+	private ConnectedBroadcastReceiver connectedReceiver;
+	private BroadcastReceiver disconnectedReceiver;
 
 	private boolean clientIsRegistered;
 
@@ -40,19 +52,47 @@ public class AndroidRobotActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 
-		androidRobotData = (AndroidRobotData) getApplicationContext();
-
-		BluetoothUtil.enableBlueTooth(this);
-
-		clientIsRegistered = false;
-
-		// WARNING: Bugs are abound!!!!
 		messageField = (TextView) findViewById(R.id.message_field);
 		deviceName = (TextView) findViewById(R.id.device_name);
 		sendButton = (Button) findViewById(R.id.send_button);
 		serverButton = (Button) findViewById(R.id.server_button);
 		clientButton = (Button) findViewById(R.id.client_button);
 		resetButton = (Button) findViewById(R.id.reset_button);
+		connectionCheckBox = (CheckBox) findViewById(R.id.connection_check_box);
+
+		connectedReceiver = new ConnectedBroadcastReceiver(this, new Handler() {
+
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				connectionCheckBox.setChecked(true);
+
+				ArrayList<BluetoothDevice> connectedDevices = new ArrayList<BluetoothDevice>(
+						AndroidRobotData.bluetoothAdapter.getBondedDevices());
+
+				// Do something useful here
+				deviceName.setText("Remote: "
+						+ connectedDevices.get(0).getName());
+			}
+		});
+
+		IntentFilter disconnectedFilter = new IntentFilter();
+		disconnectedFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+
+		disconnectedReceiver = new BroadcastReceiver() {
+
+			@Override
+			public void onReceive(Context context, Intent intent) {
+				Log.d(TAG, "Received disconnected event");
+				connectionCheckBox.setChecked(false);
+			}
+		};
+
+		androidRobotData = (AndroidRobotData) getApplicationContext();
+
+		BluetoothUtil.enableBlueTooth(this);
+
+		clientIsRegistered = false;
 
 		sendButton.setOnClickListener(new OnClickListener() {
 
@@ -148,8 +188,6 @@ public class AndroidRobotActivity extends Activity {
 
 							androidRobotData.btConnection = btConnection;
 
-							deviceName.setText(device.getName());
-
 							BluetoothClient btClient = new BluetoothClient(
 									androidRobotData.bluetoothAdapter, device,
 									androidRobotData.serverUUID, btConnection);
@@ -165,7 +203,6 @@ public class AndroidRobotActivity extends Activity {
 						registerReceiver(clientReceiver, filter);
 						clientIsRegistered = true;
 					}
-
 				}
 
 				AndroidRobotData.bluetoothAdapter.startDiscovery();
@@ -176,6 +213,10 @@ public class AndroidRobotActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+
+				deviceName.setText("Remote: ");
+				connectionCheckBox.setChecked(false);
+
 				if (androidRobotData.btConnection != null) {
 					androidRobotData.btConnection.stop();
 				}
@@ -204,6 +245,12 @@ public class AndroidRobotActivity extends Activity {
 	}
 
 	@Override
+	protected void onStart() {
+		super.onStart();
+
+	}
+
+	@Override
 	protected void onDestroy() {
 		super.onDestroy();
 
@@ -211,5 +258,7 @@ public class AndroidRobotActivity extends Activity {
 			unregisterReceiver(clientReceiver);
 			clientIsRegistered = false;
 		}
+
+		unregisterReceiver(connectedReceiver);
 	}
 }

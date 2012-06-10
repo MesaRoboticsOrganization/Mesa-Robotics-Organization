@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
+        android:minSdkVersion="7"
         android:targetSdkVersion="15" />
 
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -14,11 +14,12 @@
 
     <application
         android:name="com.mro.util.AndroidRobotData"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@drawable/launcher"
         android:label="@string/app_name" >
         <activity
-            android:name=".AndroidRobotActivity"
-            android:label="@string/app_name" >
+            android:name="com.mro.activities.AndroidRobotActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
