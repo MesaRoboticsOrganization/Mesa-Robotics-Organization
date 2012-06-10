@@ -13,7 +13,8 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.util.Log;
 
-public class BluetoothConnection extends Thread implements BluetoothSocketHandler {
+public class BluetoothConnection extends Thread implements
+		BluetoothSocketHandler {
 	public final static String TAG = BluetoothConnection.class.getSimpleName();
 
 	private BufferedReader reader;
@@ -60,8 +61,7 @@ public class BluetoothConnection extends Thread implements BluetoothSocketHandle
 		try {
 			while (shouldContinue) {
 
-				// NOTE: This will short-circuit if socket is null
-				if (socket != null) {
+				if (socket != null && reader != null) {
 					if ((line = reader.readLine()) != null) {
 						handler.obtainMessage(MAX_PRIORITY, line)
 								.sendToTarget();
@@ -81,11 +81,13 @@ public class BluetoothConnection extends Thread implements BluetoothSocketHandle
 
 	public void write(String output) {
 		try {
-			writer.write(output + "\n");
+			if (writer != null) {
+				writer.write(output + "\n");
 
-			// Should we try to flush it right away?
-			// not really sure here, I would imagine so
-			writer.flush();
+				// Should we try to flush it right away?
+				// not really sure here, I would imagine so
+				writer.flush();
+			}
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to write to stream!", e);
 		}
