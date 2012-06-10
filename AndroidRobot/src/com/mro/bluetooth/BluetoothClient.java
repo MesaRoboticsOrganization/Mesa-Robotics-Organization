@@ -18,7 +18,7 @@ public class BluetoothClient extends Thread {
 
 	public BluetoothClient(BluetoothAdapter adapter, BluetoothDevice device,
 			UUID uuid, BluetoothSocketHandler handler) {
-
+		this.adapter = adapter;
 		this.handler = handler;
 
 		try {
