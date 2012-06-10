@@ -23,11 +23,11 @@ public class BluetoothServer extends Thread {
 	public final int MILITOSECS = 1000;
 
 	private BluetoothServerSocket serverSocket;
-	private BluetoothHandler handler;
+	private BluetoothSocketHandler handler;
 	private boolean shouldContinue;
 
 	public BluetoothServer(BluetoothAdapter adapter, String name, UUID uuid,
-			BluetoothHandler handler) {
+			BluetoothSocketHandler handler) {
 		this.handler = handler;
 		this.shouldContinue = true;
 
@@ -66,6 +66,5 @@ public class BluetoothServer extends Thread {
 		}
 
 		shouldContinue = false;
-		stop();
 	}
 }

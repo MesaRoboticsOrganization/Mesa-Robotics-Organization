@@ -5,25 +5,21 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 
 import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
-public class BluetoothConnection extends Thread implements BluetoothHandler {
+public class BluetoothConnection extends Thread implements BluetoothSocketHandler {
 	public final static String TAG = BluetoothConnection.class.getSimpleName();
 
 	private BufferedReader reader;
 	private BufferedWriter writer;
 	private boolean shouldContinue;
 	private BluetoothSocket socket;
-	private InputStream inStream;
-	private OutputStream outStream;
 	private Handler handler;
 
 	public BluetoothConnection(BluetoothSocket socket, Handler handler) {
@@ -43,7 +39,8 @@ public class BluetoothConnection extends Thread implements BluetoothHandler {
 		Log.d(TAG, "Handling socket!");
 
 		this.socket = socket;
-		InputStream inStream = null;
+
+		BufferedInputStream inStream = null;
 		OutputStream outStream = null;
 
 		try {
@@ -53,13 +50,7 @@ public class BluetoothConnection extends Thread implements BluetoothHandler {
 			Log.e(TAG, "Failed to create connection streams!", e);
 		}
 
-		try {
-			reader = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		reader = new BufferedReader(new InputStreamReader(inStream));
 		writer = new BufferedWriter(new OutputStreamWriter(outStream));
 	}
 

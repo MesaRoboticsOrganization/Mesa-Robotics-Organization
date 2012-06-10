@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -89,6 +89,7 @@ public class AndroidRobotActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "Send button clicked!");
 				BluetoothConnection btConnection = androidRobotData.btConnection;
 
 				if (btConnection != null) {
@@ -105,6 +106,8 @@ public class AndroidRobotActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "Server button clicked!");
+
 				// Only try to setup the entire connection if we do not have a
 				// connection already
 				if (androidRobotData.btConnection == null) {
@@ -131,8 +134,8 @@ public class AndroidRobotActivity extends Activity {
 
 					// Create the server to allow other client(s) to connect to
 					BluetoothServer btServer = new BluetoothServer(
-							androidRobotData.bluetoothAdapter, "Server",
-							androidRobotData.serverUUID, btConnection);
+							AndroidRobotData.bluetoothAdapter, "Server",
+							AndroidRobotData.serverUUID, btConnection);
 
 					androidRobotData.server = btServer;
 
@@ -147,6 +150,8 @@ public class AndroidRobotActivity extends Activity {
 		clientButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "Client button clicked!");
+
 				// Only try to setup the entire connection if we do not have a
 				// connection already
 				if (androidRobotData.btConnection == null) {
@@ -184,6 +189,7 @@ public class AndroidRobotActivity extends Activity {
 
 			@Override
 			public void onClick(View v) {
+				Log.d(TAG, "Reset button clicked!");
 
 				deviceName.setText("Remote: ");
 				connectionCheckBox.setChecked(false);
@@ -192,12 +198,6 @@ public class AndroidRobotActivity extends Activity {
 				resetViews();
 			}
 		});
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-
 	}
 
 	@Override

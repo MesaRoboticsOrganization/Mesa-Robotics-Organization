@@ -9,7 +9,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.mro.bluetooth.BluetoothClient;
-import com.mro.bluetooth.BluetoothConnection;
 import com.mro.util.AndroidRobotData;
 
 public class FoundDeviceReceiver extends BroadcastReceiver {
@@ -53,8 +52,8 @@ public class FoundDeviceReceiver extends BroadcastReceiver {
 
 		// Create the Bluetooth client thread
 		BluetoothClient btClient = new BluetoothClient(
-				androidRobotData.bluetoothAdapter, device,
-				androidRobotData.serverUUID, androidRobotData.btConnection);
+				AndroidRobotData.bluetoothAdapter, device,
+				AndroidRobotData.serverUUID, androidRobotData.btConnection);
 
 		androidRobotData.client = btClient;
 
