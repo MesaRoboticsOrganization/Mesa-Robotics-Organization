@@ -53,40 +53,44 @@ public class BluetoothConnection extends Thread implements BluetoothHandler {
 			Log.e(TAG, "Failed to create connection streams!", e);
 		}
 
-		reader = new BufferedReader(new InputStreamReader(inStream));
+		try {
+			reader = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		writer = new BufferedWriter(new OutputStreamWriter(outStream));
 	}
 
 	public void run() {
-		while (shouldContinue) {
-			byte[] buffer = new byte[1024]; // buffer store for the stream
-			int bytes; // bytes returned from read()
-			try {
-				if (socket != null && socket.getInputStream() != null) {
-					if ((bytes = socket.getInputStream().read(buffer)) != -1) {
-						String str = new String(buffer, 0, bytes);
-						Log.d(TAG, "Number of bytes written: " + bytes);
-						handler.obtainMessage(bytes, str).sendToTarget();
+		String line;
+
+		try {
+			while (shouldContinue) {
+
+				// NOTE: This will short-circuit if socket is null
+				if (socket != null) {
+					if ((line = reader.readLine()) != null) {
+						handler.obtainMessage(MAX_PRIORITY, line)
+								.sendToTarget();
 					}
 				}
-			} catch (IOException e) {
-				Log.e(TAG, "Failed to read line from stream!", e);
-			}
 
-			try {
 				Thread.sleep(200);
-			} catch (InterruptedException e) {
-				Log.d(TAG, "I am out of my slumbering sleep!");
 			}
+		} catch (IOException e) {
+			Log.e(TAG,
+					"Failed to read from Bluetooth socket! Have fun debugging!",
+					e);
+		} catch (InterruptedException e) {
+			Log.d(TAG, "I am out of my slumbering sleep!");
 		}
 	}
 
 	public void write(String output) {
 		try {
-			// OutputStreamWriter writer = new OutputStreamWriter(
-			// socket.getOutputStream());
-
-			writer.write(output);
+			writer.write(output + "\n");
 
 			// Should we try to flush it right away?
 			// not really sure here, I would imagine so
@@ -94,5 +98,9 @@ public class BluetoothConnection extends Thread implements BluetoothHandler {
 		} catch (IOException e) {
 			Log.e(TAG, "Failed to write to stream!", e);
 		}
+	}
+
+	public void stopConnection() {
+		shouldContinue = false;
 	}
 }

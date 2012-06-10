@@ -41,19 +41,21 @@ public class BluetoothClient extends Thread {
 			clientSocket.connect();
 		} catch (IOException e) {
 			Log.e(TAG, "Could not connect to a server", e);
+
+			return;
 		}
 
 		handler.handleSocket(clientSocket);
 	}
 
 	public void stopClient() {
-
-		shouldContinue = false;
-
 		try {
 			clientSocket.close();
 		} catch (IOException e) {
 			Log.e(TAG, "", e);
 		}
+
+		shouldContinue = false;
+		stop();
 	}
 }

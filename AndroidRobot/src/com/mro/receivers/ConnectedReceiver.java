@@ -7,12 +7,15 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
-public class ConnectedBroadcastReceiver extends BroadcastReceiver {
+public class ConnectedReceiver extends BroadcastReceiver {
+
+	private final static String TAG = ConnectedReceiver.class.getSimpleName();
 
 	private Handler handler;
 
-	public ConnectedBroadcastReceiver(Context context, Handler handler) {
+	public ConnectedReceiver(Context context, Handler handler) {
 		this.handler = handler;
 
 		IntentFilter connectedFilter = new IntentFilter();
@@ -22,7 +25,8 @@ public class ConnectedBroadcastReceiver extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Message msg = new Message();
-		handler.sendMessage(msg);
+		Log.d(TAG, "Received connected event!");
+
+		handler.sendEmptyMessage(0);
 	}
 }

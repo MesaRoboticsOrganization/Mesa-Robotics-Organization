@@ -66,5 +66,6 @@ public class BluetoothServer extends Thread {
 		}
 
 		shouldContinue = false;
+		stop();
 	}
 }

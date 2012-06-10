@@ -14,8 +14,8 @@ public class AndroidRobotData extends Application {
 	public final static String TAG = AndroidRobotData.class.getSimpleName();
 	public final static UUID serverUUID = UUID
 			.fromString("1fcafeb0-ad58-11e1-afa6-0800200c9a66");
-//	public final static UUID clientUUID = UUID
-//			.fromString("1fcafeb0-ad58-11e1-afa6-0800200c9a66");
+	// public final static UUID clientUUID = UUID
+	// .fromString("1fcafeb0-ad58-11e1-afa6-0800200c9a66");
 	public final static UUID clientUUID = UUID
 			.fromString("35c26620-ad5a-11e1-afa6-0800200c9a66");
 
@@ -38,5 +38,24 @@ public class AndroidRobotData extends Application {
 			Toast.makeText(this, "Bluetooth is not available!",
 					Toast.LENGTH_LONG);
 		}
+	}
+
+	// Reset everything
+	public void reset() {
+		if (btConnection != null) {
+			btConnection.stopConnection();
+		}
+
+		if (server != null) {
+			server.stopServer();
+		}
+
+		if (client != null) {
+			client.stopClient();
+		}
+
+		btConnection = null;
+		server = null;
+		client = null;
 	}
 }
