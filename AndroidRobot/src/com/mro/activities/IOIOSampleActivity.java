@@ -2,147 +2,216 @@ package com.mro.activities;
 
 import android.os.Bundle;
 import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.mro.android.R;
 
-import ioio.lib.api.AnalogInput;
 import ioio.lib.api.DigitalOutput;
+import ioio.lib.api.IOIO;
 import ioio.lib.api.PwmOutput;
 import ioio.lib.api.exception.ConnectionLostException;
-import ioio.lib.util.AbstractIOIOActivity;
+import ioio.lib.util.BaseIOIOLooper;
+import ioio.lib.util.IOIOLooper;
+import ioio.lib.util.android.IOIOActivity;
 
-public class IOIOSampleActivity extends AbstractIOIOActivity {
-    // private TextView textView1_;
-    // private TextView textView2_;
-    // private TextView textView3_;
-    private SeekBar seekBar1_;
-    private SeekBar seekBar2_;
-    private SeekBar seekBar3_;
-    private SeekBar seekBar4_;
+public class IOIOSampleActivity extends IOIOActivity {
 
-    // private SeekBar seekBar4_;
-    // private ToggleButton toggleButton1_;
-    // private ToggleButton toggleButton2_;
+    private static final String TAG = IOIOSampleActivity.class.getSimpleName();
 
+    private ToggleButton button_;
+    private SeekBar seekBar1;
+    private SeekBar seekBar2;
+    private SeekBar seekBar3;
+    private SeekBar seekBar4;
+    private TextView pwmText1;
+    private TextView pwmText2;
+    private TextView pwmText3;
+    private TextView pwmText4;
+
+    /**
+     * Called when the activity is first created. Here we normally initialize our GUI.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.ioio_sample);
+        setContentView(R.layout.main);
+        button_ = (ToggleButton) findViewById(R.id.button);
+        seekBar1 = (SeekBar) findViewById(R.id.seekBar1);
+        seekBar2 = (SeekBar) findViewById(R.id.seekBar2);
+        seekBar3 = (SeekBar) findViewById(R.id.seekBar3);
+        seekBar4 = (SeekBar) findViewById(R.id.seekBar4);
 
-        // textView1_ = (TextView) findViewById(R.id.TextView1);
-        // textView2_ = (TextView) findViewById(R.id.TextView2);
-        // textView3_ = (TextView) findViewById(R.id.TextView3);
-        seekBar1_ = (SeekBar) findViewById(R.id.seek_bar1);
-        seekBar2_ = (SeekBar) findViewById(R.id.seek_bar2);
-        seekBar3_ = (SeekBar) findViewById(R.id.seek_bar3);
-        seekBar4_ = (SeekBar) findViewById(R.id.seek_bar4);
-        // seekBar4_ = (SeekBar) findViewById(R.id.SeekBar4);
-        // toggleButton1_ = (ToggleButton) findViewById(R.id.ToggleButton1);
-        // toggleButton2_ = (ToggleButton) findViewById(R.id.ToggleButton2);
-        enableUi(false);
+        seekBar1.setProgress(500);
+        seekBar2.setProgress(500);
+        seekBar3.setProgress(500);
+        seekBar4.setProgress(500);
+
+        pwmText1 = (TextView) findViewById(R.id.pwmText1);
+        pwmText2 = (TextView) findViewById(R.id.pwmText2);
+        pwmText3 = (TextView) findViewById(R.id.pwmText3);
+        pwmText4 = (TextView) findViewById(R.id.pwmText4);
+
+        seekBar1.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar arg0, int value, boolean arg2) {
+                pwmText1.setText("Pulse Width 1: " + (1000 + value));
+            }
+        });
+
+        seekBar2.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar arg0, int value, boolean arg2) {
+                pwmText2.setText("Pulse Width 2: " + (1000 + value));
+            }
+        });
+
+        seekBar3.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar arg0, int value, boolean arg2) {
+                pwmText3.setText("Pulse Width 3: " + (1000 + value));
+            }
+        });
+
+        seekBar4.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+
+            @Override
+            public void onStopTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar arg0) {
+            }
+
+            @Override
+            public void onProgressChanged(SeekBar arg0, int value, boolean arg2) {
+                pwmText4.setText("Pulse Width 4: " + (1000 + value));
+            }
+        });
     }
 
-    class IOIOThread extends AbstractIOIOActivity.IOIOThread {
-        private AnalogInput input1_;
-        private AnalogInput input2_;
-        private AnalogInput input3_;
-        private PwmOutput pwmOutput1_;
-        private PwmOutput pwmOutput2_;
-        private PwmOutput pwmOutput3_;
-        private PwmOutput pwmOutput4_;
-        private DigitalOutput led1_;
-        private DigitalOutput led2_;
+    private void moveMotors(int x, int y) {
+        int pulseLeft = 0;
+        int pulseRight = 0;
 
-        public void setup() throws ConnectionLostException {
-            try {
-                input1_ = ioio_.openAnalogInput(40);
-                input2_ = ioio_.openAnalogInput(41);
-                input3_ = ioio_.openAnalogInput(42);
-                pwmOutput1_ = ioio_.openPwmOutput(10, 100);
-                pwmOutput2_ = ioio_.openPwmOutput(11, 100);
-                pwmOutput3_ = ioio_.openPwmOutput(12, 100);
-                pwmOutput4_ = ioio_.openPwmOutput(13, 100);
-                led1_ = ioio_.openDigitalOutput(25, false);
-                led2_ = ioio_.openDigitalOutput(26, false);
+        double leftMultiplier = getLMult(x);
+        double rightMultiplier = getRMult(x);
 
-                enableUi(true);
-            } catch (ConnectionLostException e) {
-                enableUi(false);
-                throw e;
-            }
+        pulseLeft = 1500 + (int) (y * leftMultiplier);
+        pulseRight = 1500 + (int) (y * rightMultiplier);
+
+        pwmOutputLeft.setPulseWidth(pulseLeft);
+        pwmOutputRight.setPulseWidth(pulseRight);
+    }
+
+    private double getLMult(int x) {
+        if (x <= 0) {
+            return 1.0 + (x / 500);
+        } else return 1.0;
+    }
+
+    private double getRMult(int x) {
+        if (x >= 0) {
+            return 1.0 - (x / 500);
+        } else return 1.0;
+    }
+
+    /**
+     * This is the thread on which all the IOIO activity happens. It will be run every time the
+     * application is resumed and aborted when it is paused. The method setup() will be called right
+     * after a connection with the IOIO has been established (which might happen several times!).
+     * Then, loop() will be called repetitively until the IOIO gets disconnected.
+     */
+    class Looper extends BaseIOIOLooper {
+        /** The on-board LED. */
+        private DigitalOutput led_;
+        private PwmOutput pwmOutput1;
+        private PwmOutput pwmOutput2;
+        private PwmOutput pwmOutput3;
+        private PwmOutput pwmOutput4;
+
+        /**
+         * Called every time a connection with IOIO has been established. Typically used to open
+         * pins.
+         * 
+         * @throws ConnectionLostException When IOIO connection is lost.
+         * @see ioio.lib.util.AbstractIOIOActivity.IOIOThread#setup()
+         */
+        @Override
+        protected void setup() throws ConnectionLostException {
+            led_ = ioio_.openDigitalOutput(IOIO.LED_PIN, true);
+            pwmOutput1 = ioio_.openPwmOutput(10, 100);
+            pwmOutput2 = ioio_.openPwmOutput(11, 100);
+            pwmOutput3 = ioio_.openPwmOutput(12, 100);
+            pwmOutput4 = ioio_.openPwmOutput(13, 100);
         }
 
+        /**
+         * Called repetitively while the IOIO is connected.
+         * 
+         * @throws ConnectionLostException When IOIO connection is lost.
+         * @see ioio.lib.util.AbstractIOIOActivity.IOIOThread#loop()
+         */
+        @Override
         public void loop() throws ConnectionLostException {
-            try {
-                final float reading1 = input1_.read();
-                final float reading2 = input2_.read();
-                final float reading3 = input3_.read();
-                // setText1(Float.toString(reading1));
-                // setText2(Float.toString(reading2));
-                // setText3(Float.toString(reading3));
+            led_.write(!button_.isChecked());
 
-                pwmOutput1_.setPulseWidth(500 + seekBar1_.getProgress() * 2);
-                pwmOutput2_.setPulseWidth(500 + seekBar2_.getProgress() * 2);
-                pwmOutput3_.setPulseWidth(500 + seekBar3_.getProgress() * 2);
-                pwmOutput4_.setPulseWidth(500 + seekBar4_.getProgress() * 2);
-                // led1_.write(!toggleButton1_.isChecked());
-                // led2_.write(!toggleButton2_.isChecked());
-                sleep(10);
-            } catch (InterruptedException e) {
-                ioio_.disconnect();
-            } catch (ConnectionLostException e) {
-                enableUi(false);
-                throw e;
-            }
+            // pwmOutput1.setPulseWidth(1200);
+            // pwmOutput2.setPulseWidth(1200);
+            // pwmOutput3.setPulseWidth(1200);
+            // pwmOutput4.setPulseWidth(1200);
+
+            int pulseWidth1 = 1000 + seekBar1.getProgress();
+            int pulseWidth2 = 1000 + seekBar2.getProgress();
+            int pulseWidth3 = 1000 + seekBar3.getProgress();
+            int pulseWidth4 = 1000 + seekBar4.getProgress();
+
+            pwmOutput1.setPulseWidth(pulseWidth1);
+            pwmOutput2.setPulseWidth(pulseWidth2);
+            pwmOutput3.setPulseWidth(pulseWidth3);
+            pwmOutput4.setPulseWidth(pulseWidth4);
+
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {}
         }
     }
 
+    /**
+     * A method to create our IOIO thread.
+     * 
+     * @see ioio.lib.util.AbstractIOIOActivity#createIOIOThread()
+     */
     @Override
-    protected AbstractIOIOActivity.IOIOThread createIOIOThread() {
-        return new IOIOThread();
-    }
-
-    private void enableUi(final boolean enable) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                seekBar1_.setEnabled(enable);
-                seekBar2_.setEnabled(enable);
-                seekBar3_.setEnabled(enable);
-                seekBar4_.setEnabled(enable);
-                // toggleButton1_.setEnabled(enable);
-                // toggleButton2_.setEnabled(enable);
-            }
-        });
-    }
-
-    private void setText1(final String str1) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // textView1_.setText(str1);
-
-            }
-        });
-    }
-
-    private void setText2(final String str2) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // textView2_.setText(str2);
-
-            }
-        });
-    }
-
-    private void setText3(final String str3) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                // textView3_.setText(str3);
-
-            }
-        });
+    protected IOIOLooper createIOIOLooper() {
+        return new Looper();
     }
 }
