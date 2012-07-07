@@ -1,110 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
-
-    <CheckBox
-        android:id="@+id/connection_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:checked="false"
-        android:clickable="false"
-        android:text="Health" />
+    android:layout_height="fill_parent" >
 
     <TextView
-        android:id="@+id/device_name"
+        android:id="@+id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello" />
+
+    <ToggleButton
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/connection_check_box"
-        android:layout_alignBottom="@id/connection_check_box"
-        android:layout_centerHorizontal="true"
-        android:text="Remote:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_below="@id/title"
+        android:text="ToggleButton" >
+    </ToggleButton>
 
-    <EditText
-        android:id="@+id/message_field"
+    <SeekBar
+        android:id="@+id/seekBar1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/button"
+        android:max="1000" />
+
+    <SeekBar
+        android:id="@+id/seekBar2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar1"
+        android:max="1000" />
+
+    <SeekBar
+        android:id="@+id/seekBar3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar2"
+        android:max="1000" />
+
+    <SeekBar
+        android:id="@+id/seekBar4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/seekBar3"
+        android:max="1000" />
+
+    <TextView
+        android:id="@+id/pwmText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/device_name"
-        android:ems="10"
-        android:inputType="textMultiLine" >
+        android:layout_below="@id/seekBar4"
+        android:layout_centerVertical="true"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <requestFocus />
-    </EditText>
-
-    <Button
-        android:id="@+id/send_button"
+    <TextView
+        android:id="@+id/pwmText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/message_field"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="16dp"
-        android:text="@string/send" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/pwmText1"
+        android:layout_marginTop="30dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/server_button"
+    <TextView
+        android:id="@+id/pwmText3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/send_button"
-        android:layout_alignBottom="@id/send_button"
-        android:layout_toLeftOf="@id/device_name"
-        android:text="Become server" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/pwmText2"
+        android:layout_marginTop="28dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <Button
-        android:id="@+id/client_button"
+    <TextView
+        android:id="@+id/pwmText4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@id/send_button"
-        android:layout_alignBottom="@id/send_button"
-        android:layout_toRightOf="@id/device_name"
-        android:text="Become client" />
-
-    <Button
-        android:id="@+id/reset_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/send_button"
-        android:layout_below="@id/send_button"
-        android:layout_marginTop="14dp"
-        android:text="Reset" />
-
-    <Button
-        android:id="@+id/dpad_down_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="59dp"
-        android:background="@drawable/dpad_down" />
-
-    <Button
-        android:id="@+id/dpad_left_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/dpad_down_button"
-        android:layout_alignRight="@+id/server_button"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/dpad_left" />
-
-    <Button
-        android:id="@+id/dpad_right_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/dpad_left_button"
-        android:layout_alignBottom="@+id/dpad_left_button"
-        android:layout_toRightOf="@+id/reset_button"
-        android:background="@drawable/dpad_right" />
-
-    <Button
-        android:id="@+id/dpad_up_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/dpad_right_button"
-        android:layout_alignLeft="@+id/dpad_down_button"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/dpad_up" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/pwmText3"
+        android:layout_marginTop="39dp"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>
