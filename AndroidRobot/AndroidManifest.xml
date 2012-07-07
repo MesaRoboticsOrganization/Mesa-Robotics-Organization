@@ -11,13 +11,15 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- android:name="com.mro.activities.AndroidRobotActivity" -->
     <application
         android:name="com.mro.util.AndroidRobotData"
         android:icon="@drawable/launcher"
         android:label="@string/app_name" >
         <activity
-            android:name="com.mro.activities.AndroidRobotActivity"
+            android:name="com.mro.activities.IOIOSampleActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
             <intent-filter>

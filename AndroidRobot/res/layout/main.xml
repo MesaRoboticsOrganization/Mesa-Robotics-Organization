@@ -71,57 +71,40 @@
         android:layout_marginTop="14dp"
         android:text="Reset" />
 
-    <com.mro.widgets.VerticalSlider
-        android:id="@+id/right_slider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/reset_button"
-        android:layout_toRightOf="@+id/connection_check_box"
-        android:clickable="true"
-        android:longClickable="true"
-        android:minWidth="200dp" />
-
-    <com.mro.widgets.VerticalSlider
-        android:id="@+id/left_slider"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/server_button"
-        android:layout_below="@+id/reset_button"
-        android:clickable="true"
-        android:longClickable="true"
-        android:minWidth="200dp" />
-
     <Button
-        android:id="@+id/dpad_up_button"
+        android:id="@+id/dpad_down_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@id/right_slider"
-        android:layout_marginTop="24dp"
-        android:layout_toRightOf="@id/send_button"
-        android:background="@drawable/dpad_up" />
-
-    <Button
-        android:id="@+id/dpad_right_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/dpad_up_button"
-        android:layout_toRightOf="@id/dpad_up_button"
-        android:background="@drawable/dpad_right" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="59dp"
+        android:background="@drawable/dpad_down" />
 
     <Button
         android:id="@+id/dpad_left_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/dpad_up_button"
-        android:layout_toLeftOf="@id/dpad_up_button"
+        android:layout_above="@+id/dpad_down_button"
+        android:layout_alignRight="@+id/server_button"
+        android:layout_marginBottom="25dp"
         android:background="@drawable/dpad_left" />
 
     <Button
-        android:id="@+id/dpad_down_button"
+        android:id="@+id/dpad_right_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/dpad_up_button"
-        android:layout_below="@+id/dpad_left_button"
-        android:background="@drawable/dpad_down" />
+        android:layout_alignBaseline="@+id/dpad_left_button"
+        android:layout_alignBottom="@+id/dpad_left_button"
+        android:layout_toRightOf="@+id/reset_button"
+        android:background="@drawable/dpad_right" />
+
+    <Button
+        android:id="@+id/dpad_up_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/dpad_right_button"
+        android:layout_alignLeft="@+id/dpad_down_button"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/dpad_up" />
 
 </RelativeLayout>
