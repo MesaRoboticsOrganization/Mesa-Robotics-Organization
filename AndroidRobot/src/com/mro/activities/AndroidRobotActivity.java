@@ -1,5 +1,8 @@
 package com.mro.activities;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -22,206 +25,258 @@ import com.mro.receivers.ConnectedReceiver;
 import com.mro.receivers.DisconnectedReceiver;
 import com.mro.receivers.FoundDeviceReceiver;
 import com.mro.util.AndroidRobotData;
-
-import java.util.ArrayList;
+import com.mro.util.Base64Encode;
 
 public class AndroidRobotActivity extends Activity {
 
-    private final static String TAG = AndroidRobotActivity.class.getSimpleName();
+	private final static String TAG = AndroidRobotActivity.class
+			.getSimpleName();
 
-    private AndroidRobotData androidRobotData;
-    private TextView messageField;
-    private TextView deviceName;
-    private Button sendButton;
-    private Button serverButton;
-    private Button clientButton;
-    private Button resetButton;
-    private CheckBox connectionCheckBox;
+	private AndroidRobotData androidRobotData;
+	private TextView messageField;
+	private TextView deviceName;
+	private Button sendButton;
+	private Button serverButton;
+	private Button clientButton;
+	private Button resetButton;
+	private CheckBox connectionCheckBox;
 
-    private ConnectedReceiver connectedReceiver;
-    private FoundDeviceReceiver foundReceiver;
-    private DisconnectedReceiver disconnectedReceiver;
+	private ConnectedReceiver connectedReceiver;
+	private FoundDeviceReceiver foundReceiver;
+	private DisconnectedReceiver disconnectedReceiver;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.mro_main);
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.mro_main);
 
-        BluetoothUtil.enableBlueTooth(this);
+		BluetoothUtil.enableBlueTooth(this);
 
-        messageField = (TextView) findViewById(R.id.message_field);
-        deviceName = (TextView) findViewById(R.id.device_name);
-        sendButton = (Button) findViewById(R.id.send_button);
-        serverButton = (Button) findViewById(R.id.server_button);
-        clientButton = (Button) findViewById(R.id.client_button);
-        resetButton = (Button) findViewById(R.id.reset_button);
-        connectionCheckBox = (CheckBox) findViewById(R.id.connection_check_box);
+		messageField = (TextView) findViewById(R.id.message_field);
+		deviceName = (TextView) findViewById(R.id.device_name);
+		sendButton = (Button) findViewById(R.id.send_button);
+		serverButton = (Button) findViewById(R.id.server_button);
+		clientButton = (Button) findViewById(R.id.client_button);
+		resetButton = (Button) findViewById(R.id.reset_button);
+		connectionCheckBox = (CheckBox) findViewById(R.id.connection_check_box);
 
-        connectedReceiver = new ConnectedReceiver(this, new Handler() {
+		connectedReceiver = new ConnectedReceiver(this, new Handler() {
 
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                connectionCheckBox.setChecked(true);
+			@Override
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				connectionCheckBox.setChecked(true);
 
-                ArrayList<BluetoothDevice> connectedDevices = new ArrayList<BluetoothDevice>(
-                        AndroidRobotData.bluetoothAdapter.getBondedDevices());
+				ArrayList<BluetoothDevice> connectedDevices = new ArrayList<BluetoothDevice>(
+						AndroidRobotData.bluetoothAdapter.getBondedDevices());
 
-                // Do something useful here
-                deviceName.setText("Remote: " + connectedDevices.get(0).getName());
-            }
-        });
+				// Do something useful here
+				deviceName.setText("Remote: "
+						+ connectedDevices.get(0).getName());
+			}
+		});
 
-        disconnectedReceiver = new DisconnectedReceiver(this, new Handler() {
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                connectionCheckBox.setChecked(false);
+		disconnectedReceiver = new DisconnectedReceiver(this, new Handler() {
+			public void handleMessage(Message msg) {
+				super.handleMessage(msg);
+				connectionCheckBox.setChecked(false);
 
-                resetViews();
-            }
-        });
+				resetViews();
+			}
+		});
 
-        androidRobotData = (AndroidRobotData) getApplicationContext();
+		androidRobotData = (AndroidRobotData) getApplicationContext();
 
-        sendButton.setOnClickListener(new OnClickListener() {
+		sendButton.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Send button clicked!");
-                BluetoothConnection btConnection = androidRobotData.btConnection;
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Send button clicked!");
+				BluetoothConnection btConnection = androidRobotData.btConnection;
 
-                if (btConnection != null) {
-                    String text = messageField.getText().toString();
+				if (btConnection != null) {
+					String text = messageField.getText().toString();
 
-                    if (!text.equals("")) {
-                        btConnection.write(text);
-                    }
-                }
-            }
-        });
+					if (!text.equals("")) {
+						try {
+							btConnection.write(Base64Encode.encodeObject(text));
+						} catch (IOException e) {
+							Log.e(TAG, "", e);
+						}
+					}
+				}
+			}
+		});
 
-        serverButton.setOnClickListener(new OnClickListener() {
+		serverButton.setOnClickListener(new OnClickListener() {
 
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Server button clicked!");
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Server button clicked!");
 
-                // Only try to setup the entire connection if we do not have a
-                // connection already
-                if (androidRobotData.btConnection == null) {
-                    // Make sure we don't try to be a client
-                    clientButton.setClickable(false);
-                    clientButton.setText("Disabled!");
+				// Only try to setup the entire connection if we do not have a
+				// connection already
+				if (androidRobotData.btConnection == null) {
+					// Make sure we don't try to be a client
+					clientButton.setClickable(false);
+					clientButton.setText("Disabled!");
 
-                    // Allow the device to be discoverable
-                    Intent discoverableIntent = new Intent(
-                            BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
-                    discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
-                    startActivity(discoverableIntent);
+					// Allow the device to be discoverable
+					Intent discoverableIntent = new Intent(
+							BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+					discoverableIntent.putExtra(
+							BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+					startActivity(discoverableIntent);
 
-                    BluetoothConnection btConnection = new BluetoothConnection(new Handler() {
-                        public void handleMessage(Message msg) {
-                            String str = (String) msg.obj;
-                            messageField.setText(str);
-                        }
-                    });
+					BluetoothConnection btConnection = new BluetoothConnection(
+							new Handler() {
+								public void handleMessage(Message msg) {
+									String str = null;
 
-                    androidRobotData.btConnection = btConnection;
+									try {
+										str = Base64Encode
+												.decodeObject((String) msg.obj);
+									} catch (IOException e) {
+										Log.e(TAG, "", e);
+									} catch (ClassNotFoundException e) {
+										Log.e(TAG, "", e);
+									}
 
-                    // Create the server to allow other client(s) to connect to
-                    BluetoothServer btServer = new BluetoothServer(
-                            AndroidRobotData.bluetoothAdapter, "Server",
-                            AndroidRobotData.serverUUID, btConnection);
+									messageField.setText(str);
+								}
+							});
 
-                    androidRobotData.server = btServer;
+					androidRobotData.btConnection = btConnection;
 
-                    // Start the server right away to allow other client(s) to
-                    // try to connect
-                    btServer.start();
-                    btConnection.start();
-                }
-            }
-        });
+					// Create the server to allow other client(s) to connect to
+					BluetoothServer btServer = new BluetoothServer(
+							AndroidRobotData.bluetoothAdapter, "Server",
+							AndroidRobotData.serverUUID, btConnection);
 
-        clientButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Client button clicked!");
+					androidRobotData.server = btServer;
 
-                // Only try to setup the entire connection if we do not have a
-                // connection already
-                if (androidRobotData.btConnection == null) {
-                    // Make sure we don't try to be a client
-                    serverButton.setClickable(false);
-                    serverButton.setText("Disabled!");
+					// Start the server right away to allow other client(s) to
+					// try to connect
+					btServer.start();
+					btConnection.start();
+				}
+			}
+		});
 
-                    final BluetoothConnection btConnection = new BluetoothConnection(new Handler() {
-                        public void handleMessage(Message msg) {
-                            String str = (String) msg.obj;
-                            messageField.setText(str);
-                        }
-                    });
+		clientButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Client button clicked!");
 
-                    if (androidRobotData.btConnection != null) {
-                        androidRobotData.btConnection.stopConnection();
-                    }
+				// Only try to setup the entire connection if we do not have a
+				// connection already
+				if (androidRobotData.btConnection == null) {
+					// Make sure we don't try to be a client
+					serverButton.setClickable(false);
+					serverButton.setText("Disabled!");
 
-                    androidRobotData.btConnection = btConnection;
+					final BluetoothConnection btConnection = new BluetoothConnection(
+							new Handler() {
+								public void handleMessage(Message msg) {
 
-                    if (foundReceiver != null) {
-                        unregisterReceiver(foundReceiver);
-                    }
+									String str = null;
 
-                    foundReceiver = new FoundDeviceReceiver(AndroidRobotActivity.this,
-                            new Handler());
+									try {
+										str = Base64Encode
+												.decodeObject((String) msg.obj);
+									} catch (IOException e) {
+										Log.e(TAG, "", e);
+									} catch (ClassNotFoundException e) {
+										Log.e(TAG, "", e);
+									}
 
-                    AndroidRobotData.bluetoothAdapter.startDiscovery();
-                }
-            }
-        });
+									messageField.setText(str);
+								}
+							});
 
-        resetButton.setOnClickListener(new OnClickListener() {
+					if (androidRobotData.btConnection != null) {
+						androidRobotData.btConnection.stopConnection();
+					}
 
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "Reset button clicked!");
+					androidRobotData.btConnection = btConnection;
 
-                deviceName.setText("Remote: ");
-                connectionCheckBox.setChecked(false);
+					if (foundReceiver != null) {
+						unregisterReceiver(foundReceiver);
+					}
 
-                androidRobotData.reset();
-                resetViews();
-            }
-        });
-    }
+					foundReceiver = new FoundDeviceReceiver(
+							AndroidRobotActivity.this, new Handler());
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
+					AndroidRobotData.bluetoothAdapter.startDiscovery();
+				}
+			}
+		});
 
-        if (foundReceiver != null) {
-            unregisterReceiver(foundReceiver);
-        }
+		resetButton.setOnClickListener(new OnClickListener() {
 
-        if (connectedReceiver != null) {
-            unregisterReceiver(connectedReceiver);
-        }
+			@Override
+			public void onClick(View v) {
+				Log.d(TAG, "Reset button clicked!");
 
-        if (disconnectedReceiver != null) {
-            unregisterReceiver(disconnectedReceiver);
-        }
-    }
+				deviceName.setText("Remote: ");
+				connectionCheckBox.setChecked(false);
 
-    private void resetViews() {
-        // Reset the views
+				androidRobotData.reset();
+				resetViews();
+			}
+		});
 
-        deviceName.setText("Remote: ");
-        messageField.setText("");
+		// PersistentPWMCommand command = new PersistentPWMCommand(1500, 1500);
 
-        clientButton.setClickable(true);
-        clientButton.setText("Become client");
+		// String encoded = "";
+		// try {
+		// encoded = Base64Encode.encodeObject(command);
+		// } catch (IOException e) {
+		// Log.e(TAG, "", e);
+		// }
+		//
+		// Log.d(TAG, "Encoded: " + encoded);
+		//
+		// PersistentPWMCommand decoded = null;
+		// try {
+		// decoded = Base64Encode.decodeObject(encoded);
+		// } catch (IOException e) {
+		// Log.e(TAG, "", e);
+		// } catch (ClassNotFoundException e) {
+		// Log.e(TAG, "", e);
+		// }
+		//
+		// messageField.setText("PWM Left: " + decoded.getPWMLeft()
+		// + " PWM Right: " + decoded.getPWMRight());
+	}
 
-        serverButton.setClickable(true);
-        serverButton.setText("Become server");
-    }
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		if (foundReceiver != null) {
+			unregisterReceiver(foundReceiver);
+		}
+
+		if (connectedReceiver != null) {
+			unregisterReceiver(connectedReceiver);
+		}
+
+		if (disconnectedReceiver != null) {
+			unregisterReceiver(disconnectedReceiver);
+		}
+	}
+
+	private void resetViews() {
+		// Reset the views
+
+		deviceName.setText("Remote: ");
+		messageField.setText("");
+
+		clientButton.setClickable(true);
+		clientButton.setText("Become client");
+
+		serverButton.setClickable(true);
+		serverButton.setText("Become server");
+	}
 }
