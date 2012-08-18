@@ -7,13 +7,21 @@ import ioio.lib.api.exception.ConnectionLostException;
 import ioio.lib.util.BaseIOIOLooper;
 import ioio.lib.util.IOIOLooper;
 import ioio.lib.util.android.IOIOActivity;
+
+import java.io.IOException;
+
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.mro.android.R;
+import com.mro.commands.PWMCommand;
+import com.mro.util.AndroidRobotData;
+import com.mro.util.Base64Encode;
 
 public class IOIOSampleActivity extends IOIOActivity {
 
@@ -128,10 +136,13 @@ public class IOIOSampleActivity extends IOIOActivity {
 	class Looper extends BaseIOIOLooper {
 		/** The on-board LED. */
 		private DigitalOutput led_;
-		private PwmOutput pwmOutput1;
-		private PwmOutput pwmOutput2;
+		private PwmOutput pwmRightMotor;
+		private PwmOutput pwmLeft;
 		private PwmOutput pwmOutput3;
 		private PwmOutput pwmOutput4;
+
+		private int motorRightPWM;
+		private int motorLeftPWM;
 
 		/**
 		 * Called every time a connection with IOIO has been established.
@@ -144,10 +155,30 @@ public class IOIOSampleActivity extends IOIOActivity {
 		@Override
 		protected void setup() throws ConnectionLostException {
 			led_ = ioio_.openDigitalOutput(IOIO.LED_PIN, true);
-			pwmOutput1 = ioio_.openPwmOutput(10, 100);
-			pwmOutput2 = ioio_.openPwmOutput(11, 100);
+			pwmRightMotor = ioio_.openPwmOutput(10, 100);
+			pwmLeft = ioio_.openPwmOutput(11, 100);
 			pwmOutput3 = ioio_.openPwmOutput(12, 100);
 			pwmOutput4 = ioio_.openPwmOutput(13, 100);
+
+			AndroidRobotData androidRobot = ((AndroidRobotData) getApplicationContext());
+
+			androidRobot.btConnection.setConnectionHandler(new Handler() {
+
+				@Override
+				public void handleMessage(Message msg) {
+					super.handleMessage(msg);
+
+					try {
+						PWMCommand command = Base64Encode
+								.decodeObject((String) msg.obj);
+
+						motorRightPWM = command.getPWMRight();
+						motorLeftPWM = command.getPWMLeft();
+					} catch (IOException e) {
+					} catch (ClassNotFoundException e) {
+					}
+				}
+			});
 		}
 
 		/**
@@ -161,20 +192,22 @@ public class IOIOSampleActivity extends IOIOActivity {
 		public void loop() throws ConnectionLostException {
 			led_.write(!button_.isChecked());
 
+			pwmRightMotor.setPulseWidth(motorRightPWM);
+			pwmLeft.setPulseWidth(motorLeftPWM);
+
 			// pwmOutput1.setPulseWidth(1200);
 			// pwmOutput2.setPulseWidth(1200);
 			// pwmOutput3.setPulseWidth(1200);
 			// pwmOutput4.setPulseWidth(1200);
 
-			int pulseWidth1 = 1000 + seekBar1.getProgress();
-			int pulseWidth2 = 1000 + seekBar2.getProgress();
-			int pulseWidth3 = 1000 + seekBar3.getProgress();
-			int pulseWidth4 = 1000 + seekBar4.getProgress();
-
-			pwmOutput1.setPulseWidth(pulseWidth1);
-			pwmOutput2.setPulseWidth(pulseWidth2);
-			pwmOutput3.setPulseWidth(pulseWidth3);
-			pwmOutput4.setPulseWidth(pulseWidth4);
+			// int pulseWidth1 = 1000 + seekBar1.getProgress();
+			// int pulseWidth2 = 1000 + seekBar2.getProgress();
+			// int pulseWidth3 = 1000 + seekBar3.getProgress();
+			// int pulseWidth4 = 1000 + seekBar4.getProgress();
+			//
+			// pwmRightMotor.setPulseWidth(pulseWidth1);
+			// pwmOutput3.setPulseWidth(pulseWidth3);
+			// pwmOutput4.setPulseWidth(pulseWidth4);
 
 			try {
 				Thread.sleep(100);

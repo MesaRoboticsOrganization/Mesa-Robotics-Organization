@@ -21,6 +21,7 @@ import com.mro.android.R;
 import com.mro.bluetooth.BluetoothConnection;
 import com.mro.bluetooth.BluetoothServer;
 import com.mro.bluetooth.BluetoothUtil;
+import com.mro.commands.PWMCommand;
 import com.mro.receivers.ConnectedReceiver;
 import com.mro.receivers.DisconnectedReceiver;
 import com.mro.receivers.FoundDeviceReceiver;
@@ -127,6 +128,18 @@ public class AndroidRobotActivity extends Activity {
 					discoverableIntent.putExtra(
 							BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
 					startActivity(discoverableIntent);
+
+					Handler myOwnHandler = new Handler() {
+						public void handleMessage(Message msg) {
+
+							try {
+								PWMCommand command = (PWMCommand) Base64Encode
+										.decodeObject((String) msg.obj);
+							} catch (IOException e) {
+							} catch (ClassNotFoundException e) {
+							}
+						}
+					};
 
 					BluetoothConnection btConnection = new BluetoothConnection(
 							new Handler() {

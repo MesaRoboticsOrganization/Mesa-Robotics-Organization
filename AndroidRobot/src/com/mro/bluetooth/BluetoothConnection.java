@@ -13,83 +13,91 @@ import android.bluetooth.BluetoothSocket;
 import android.os.Handler;
 import android.util.Log;
 
-public class BluetoothConnection extends Thread implements BluetoothSocketHandler {
-    public final static String TAG = BluetoothConnection.class.getSimpleName();
+public class BluetoothConnection extends Thread implements
+		BluetoothSocketHandler {
+	public final static String TAG = BluetoothConnection.class.getSimpleName();
 
-    private BufferedReader reader;
-    private BufferedWriter writer;
-    private boolean shouldContinue;
-    private BluetoothSocket socket;
-    private Handler handler;
+	private BufferedReader reader;
+	private BufferedWriter writer;
+	private boolean shouldContinue;
+	private BluetoothSocket socket;
+	private Handler handler;
 
-    public BluetoothConnection(BluetoothSocket socket, Handler handler) {
-        this.handler = handler;
-        this.shouldContinue = true;
+	public BluetoothConnection(BluetoothSocket socket, Handler handler) {
+		this.handler = handler;
+		this.shouldContinue = true;
 
-        handleSocket(socket);
-    }
+		handleSocket(socket);
+	}
 
-    public BluetoothConnection(Handler handler) {
-        this.handler = handler;
-        this.shouldContinue = true;
-    }
+	public BluetoothConnection(Handler handler) {
+		setConnectionHandler(handler);
+	}
 
-    @Override
-    public void handleSocket(BluetoothSocket socket) {
-        Log.d(TAG, "Handling socket!");
+	public void setConnectionHandler(Handler handler) {
+		this.handler = handler;
+		this.shouldContinue = true;
+	}
 
-        this.socket = socket;
+	@Override
+	public void handleSocket(BluetoothSocket socket) {
+		Log.d(TAG, "Handling socket!");
 
-        BufferedInputStream inStream = null;
-        OutputStream outStream = null;
+		this.socket = socket;
 
-        try {
-            inStream = new BufferedInputStream(socket.getInputStream());
-            outStream = new BufferedOutputStream(socket.getOutputStream());
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to create connection streams!", e);
-        }
+		BufferedInputStream inStream = null;
+		OutputStream outStream = null;
 
-        reader = new BufferedReader(new InputStreamReader(inStream));
-        writer = new BufferedWriter(new OutputStreamWriter(outStream));
-    }
+		try {
+			inStream = new BufferedInputStream(socket.getInputStream());
+			outStream = new BufferedOutputStream(socket.getOutputStream());
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to create connection streams!", e);
+		}
 
-    public void run() {
-        String line;
+		reader = new BufferedReader(new InputStreamReader(inStream));
+		writer = new BufferedWriter(new OutputStreamWriter(outStream));
+	}
 
-        try {
-            while (shouldContinue) {
+	public void run() {
+		String line;
 
-                if (socket != null && reader != null) {
-                    if ((line = reader.readLine()) != null) {
-                        handler.obtainMessage(MAX_PRIORITY, line).sendToTarget();
-                    }
-                }
+		try {
+			while (shouldContinue) {
 
-                Thread.sleep(200);
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to read from Bluetooth socket! Have fun debugging!", e);
-        } catch (InterruptedException e) {
-            Log.d(TAG, "I am out of my slumbering sleep!");
-        }
-    }
+				if (socket != null && reader != null) {
+					if ((line = reader.readLine()) != null) {
+						handler.obtainMessage(MAX_PRIORITY, line)
+								.sendToTarget();
+					}
+				}
 
-    public void write(String output) {
-        try {
-            if (writer != null) {
-                writer.write(output + "\n");
+				Thread.sleep(200);
+			}
+		} catch (IOException e) {
+			Log.e(TAG,
+					"Failed to read from Bluetooth socket! Have fun debugging!",
+					e);
+		} catch (InterruptedException e) {
+			Log.d(TAG, "I am out of my slumbering sleep!");
+		}
+	}
 
-                // Should we try to flush it right away?
-                // not really sure here, I would imagine so
-                writer.flush();
-            }
-        } catch (IOException e) {
-            Log.e(TAG, "Failed to write to stream!", e);
-        }
-    }
+	public void write(String output) {
+		try {
+			if (writer != null) {
+				writer.write(output + "\n");
 
-    public void stopConnection() {
-        shouldContinue = false;
-    }
+				// Should we try to flush it right away?
+				// not really sure here, I would imagine so
+				writer.flush();
+			}
+		} catch (IOException e) {
+			Log.e(TAG, "Failed to write to stream!", e);
+		}
+	}
+
+	public void stopConnection() {
+		shouldContinue = false;
+	}
 }
