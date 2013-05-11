@@ -1,7 +1,7 @@
 #**San Diego Mesa Robotics Organization**
 # www.mesarobotics.org
 
-Members, please email your Github account name to robomro@gmail.com if you want to have push authorization.
+Members, please email your Github account name to robomro@gmail.com or ktklam9@berkeley.edu if you want to have push authorization.
 
 *Git for Windows*
 
