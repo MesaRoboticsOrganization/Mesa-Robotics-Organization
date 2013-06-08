@@ -1,0 +1,3 @@
+depth max ~4 inches
+length max ~36 inches
+width max ~18 inches
