@@ -1,3 +1,5 @@
+__author__ = 'Charles Bayley'
+
 import BeagleBoneBlackPwmApi as bbb
 
 bbb.higher.start([0, 9, 14])

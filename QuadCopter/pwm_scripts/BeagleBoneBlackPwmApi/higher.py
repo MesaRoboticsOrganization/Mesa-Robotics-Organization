@@ -1,3 +1,5 @@
+__author__ = 'Charles Bayley'
+
 import pwm
 
 pwm_pin = pwm.set_pin

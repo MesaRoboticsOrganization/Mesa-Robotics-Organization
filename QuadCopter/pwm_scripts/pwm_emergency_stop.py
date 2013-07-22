@@ -1,3 +1,5 @@
+__author__ = 'Charles Bayley'
+
 import os
 import time
 
