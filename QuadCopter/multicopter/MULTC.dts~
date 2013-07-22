@@ -1,0 +1,163 @@
+/dts-v1/;
+/plugin/;
+
+/{
+	compatible= "ti,beaglebone-black";
+	part-number="MULTC";
+	version="00A0";
+	exclusive-use = "P9.14","P9.16","P9.21","P9.22","P8.19","P8.13",
+	"ehrpwm2A","ehrpwm2B","ehrpwm1A","ehrpwm1B","ehrpwm0A","ehrpwm0B";
+	
+
+	fragment@0{
+		target =<&am33xx_pinmux>;
+
+		__overlay__ {
+
+			pwm_P9_14_pins: pinmux_pwm_P9_14_pins {
+				pinctrl-single,pins = <0x048 0x06>; 
+			};
+		
+			pwm_P9_16_pins: pinmux_pwm_P9_16_pins {
+				pinctrl-single,pins = <0x04C 0x06>;
+			};
+	
+			pwm_P9_21_pins: pinmux_pwm_P9_21_pins {
+				pinctrl-single,pins = <0x154 0x03>;
+			};
+
+			pwm_P9_22_pins: pinmux_pwm_P9_22_pins {
+				pinctrl-single,pins = <0x150 0x03>;
+			};
+			pwm_P8_13_pins: pinmux_pwm_P8_13_pins {
+				pinctrl-single,pins =<0x024 0x04>;
+			};
+			
+			pwm_P8_19_pins:pinmux_pwm_P8_19_pins {
+				pinctrl-single,pins =<0x020 0x04>;
+			};
+		};
+	};
+
+	fragment@2 {
+		target = <&epwmss1>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@3 {
+		target = <&ehrpwm1>;
+		__overlay__ {			
+			status = "okay";			
+		};
+	};
+
+	fragment@4 {
+		target = <&epwmss0>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+
+	fragment@5 {
+		target = <&ehrpwm0>;
+		__overlay__ {			
+			status = "okay";			
+		};
+	};
+	
+	fragment@6 {
+		target = <&epwmss2>;
+		__overlay__ {
+			status = "okay";
+		};
+	};
+	
+	fragment@7 {
+		target = <&ehrpwm2>;
+		__overlay__{
+			status = "okay";
+		};
+	};
+	
+	fragment@8 {
+		target = <&ocp>;
+		__overlay__ {
+		
+			P9_14 {
+				compatible	= "pwm_test";
+				pwms 		= <&ehrpwm1 0 10000000 0>;
+				pwm-names 	= "PWM_P9_14";
+			    pinctrl-names	= "default";
+			    pinctrl-0	= <&pwm_P9_14_pins>;
+				enabled		= <1>;
+				duty		= <0>;
+				polarity	= <0>;
+				status 		= "okay";
+			};
+	
+			P9_16 {
+				compatible	= "pwm_test";
+				pwms 		= <&ehrpwm1 1 10000000 0>;
+				pwm-names 	= "PWM_P9_16";
+			    pinctrl-names	= "default";
+			    pinctrl-0	= <&pwm_P9_16_pins>;
+				enabled		= <1>;
+				duty		= <0>;
+				polarity	= <0>;
+				status 		= "okay";
+			};
+		
+		
+			P9_21 {
+				compatible	= "pwm_test";
+				pwms 		= <&ehrpwm0 1 10000000 0>;
+				pwm-names 	= "PWM_P9_21";
+			    pinctrl-names	= "default";
+			    pinctrl-0	= <&pwm_P9_21_pins>;
+				enabled		= <1>;
+				duty		= <0>;
+				polarity	= <0>;
+				status 		= "okay";
+			};
+		
+			P9_22 {
+				compatible	= "pwm_test";
+				pwms 		= <&ehrpwm0 0 10000000 0>;
+				pwm-names 	= "PWM_P9_22";
+			    pinctrl-names	= "default";
+			    pinctrl-0	= <&pwm_P9_22_pins>;
+				enabled		= <1>;
+				duty		= <0>;
+				polarity	= <0>;
+				status 		= "okay";
+			};
+			
+			P8_13{
+				compatible	= "pwm_test";
+				pwms		= <&ehrpwm2 1 10000000 0>;
+				pwm-names 	="PWM_P8_13";
+				pinctrl-names   = "default";
+                            	pinctrl-0       = <&pwm_P8_13_pins>;
+                                enabled         = <1>;
+                                duty            = <0>;
+                                polarity        = <0>;
+                                status          = "okay";
+			};
+
+			 P8_19 {
+                                compatible      = "pwm_test";
+                                pwms            = <&ehrpwm0 0 10000000 0>;
+                                pwm-names       = "PWM_P8_19";
+                           	 pinctrl-names  = "default";
+                            	pinctrl-0   	= <&pwm_P8_19_pins>;
+                                enabled         = <1>;
+                                duty            = <0>;
+                                polarity        = <0>;
+                                status          = "okay";
+                        };
+
+		};
+	};
+};

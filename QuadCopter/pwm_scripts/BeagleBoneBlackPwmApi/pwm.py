@@ -14,16 +14,16 @@ def set_pin(pin_set, pin, pulse_width):
     true_pin = '*'
     if pin_set == 8:
         if pin == 13:
-            true_pin == 18
+            true_pin = 18
         elif pin == 19:
-            true_pin == 19
+            true_pin = 19
         else:
             print warning
     elif pin_set == 9:
         if pin == 14:
-            true_pin == 14
+            true_pin = 14
         elif pin == 16:
-            true_pin == 15
+            true_pin = 15
         elif pin == 21:
             true_pin = 16
         elif pin == 22:
@@ -32,7 +32,7 @@ def set_pin(pin_set, pin, pulse_width):
             print warning
     else:
         print warning
-    os.system(command + str(str(true_pin) '/duty'))
+    os.system(command + str(str(true_pin) + '/duty'))
         
             
 def start_device_tree():
