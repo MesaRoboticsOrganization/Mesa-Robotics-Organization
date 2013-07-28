@@ -43,22 +43,22 @@ void MainWindow::send(int s,int v) {
     }
 }
 
-void MainWindow::on_slider1_sliderMoved(int position)
+void MainWindow::on_slider1_valueChanged(int position)
 {
     update(0,position);
 }
 
-void MainWindow::on_slider2_sliderMoved(int position)
+void MainWindow::on_slider2_valueChanged(int position)
 {
     update(1,position);
 }
 
-void MainWindow::on_slider3_sliderMoved(int position)
+void MainWindow::on_slider3_valueChanged(int position)
 {
     update(2,position);
 }
 
-void MainWindow::on_slider4_sliderMoved(int position)
+void MainWindow::on_slider4_valueChanged(int position)
 {
     update(3,position);
 }
@@ -71,4 +71,16 @@ void MainWindow::on_actionOpen_IP_triggered()
     }
     sock = new QTcpSocket();
     sock->connectToHost(ip,1337);
+    ui->slider1->setValue(0);
+    ui->slider2->setValue(0);
+    ui->slider3->setValue(0);
+    ui->slider4->setValue(0);
+}
+
+void MainWindow::on_stopbutton_pressed()
+{
+    ui->slider1->setValue(0);
+    ui->slider2->setValue(0);
+    ui->slider3->setValue(0);
+    ui->slider4->setValue(0);
 }

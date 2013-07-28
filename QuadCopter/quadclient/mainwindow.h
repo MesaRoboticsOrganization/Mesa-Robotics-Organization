@@ -16,19 +16,21 @@ public:
     ~MainWindow();
     
 private slots:
-    void on_slider1_sliderMoved(int position);
+    void on_slider1_valueChanged(int position);
 
-    void on_slider2_sliderMoved(int position);
+    void on_slider2_valueChanged(int position);
 
-    void on_slider3_sliderMoved(int position);
+    void on_slider3_valueChanged(int position);
 
-    void on_slider4_sliderMoved(int position);
+    void on_slider4_valueChanged(int position);
 
     void on_actionOpen_IP_triggered();
 
     void update(int,int);
 
     void send(int,int);
+
+    void on_stopbutton_pressed();
 
 private:
     Ui::MainWindow *ui;
