@@ -1,18 +1,19 @@
-#**San Diego Mesa Robotics Organization**
-# www.mesarobotics.org
+##[San Diego Mesa Robotics Organization Repository](http://example.com/)
 
-Members, please email your Github account name to robomro@gmail.com or ktklam9@gmail.com if you want to have push authorization.
+Members, please email your Github account name to robomro@gmail.com or ktklam9@gmail.com if you want to have 
+push authorization.
 
-*Git for Windows*
+####Git for Windows
+- [GitHub for Windows](windows.github.com)
+- [Git for Windows (msysgit)](http://msysgit.github.io/)
 
-http://code.google.com/p/msysgit/
+####Git for Linux
+- Just install using your operating system's software manager
 
-*Git for Linux*
-
-Just install using your operating system's software manager
-
-*Tutorials on how to use Git*
-
-http://www.ralfebert.de/tutorials/git/
-<br>http://book.git-scm.com/
-<br>http://gitbyexample.org/
+####Tutorials
+- GitHub
+	- https://help.github.com/
+- Git
+	- http://www.ralfebert.de/tutorials/git/
+	- http://book.git-scm.com/
+	- http://gitbyexample.org/
