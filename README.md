@@ -1,4 +1,4 @@
-##[San Diego Mesa Robotics Organization Repository](http://example.com/)
+## Mesa Robotics Organization repository
 
 Members, please email your Github account name to robomro@gmail.com or ktklam9@gmail.com if you want to have 
 push authorization.
@@ -17,3 +17,7 @@ push authorization.
 	- http://www.ralfebert.de/tutorials/git/
 	- http://book.git-scm.com/
 	- http://gitbyexample.org/
+
+- - -
+
+#### [San Diego Mesa Robotics Organization](http://example.com/)
