@@ -32,6 +32,8 @@ private slots:
 
     void on_stopbutton_pressed();
 
+    void timerEvent();
+
 private:
     Ui::MainWindow *ui;
 };

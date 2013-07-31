@@ -11,6 +11,9 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 TARGET = quadclient
 TEMPLATE = app
 
+LIBS += -lSDL
+
+INCLUDEPATH += "/usr/include/SDL/"
 
 SOURCES += main.cpp\
         mainwindow.cpp
